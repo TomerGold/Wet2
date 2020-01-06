@@ -64,7 +64,7 @@ bool DynamicHashTable::Find(int server_id) {
 
 void DynamicHashTable::Insert(Server &server) {
     int index = HashFunction(server.GetServerId());
-    main_servers[index].InsertLast(server);// TODO check if works copy c'tor
+    main_servers[index].InsertLast(server);
 }
 
 void DynamicHashTable::Remove(int server_id) {
@@ -99,7 +99,7 @@ void DynamicHashTable::ReSizeHashTable(int indicator) {
     } else if (indicator < 0) {
         int old_size = array_size;
         array_size = (array_size / 2) + 1;
-        auto *new_arr = new LinkedList<Server>[array_size]; //TODO im not sure it works!!
+        auto *new_arr = new LinkedList<Server>[array_size];
         LinkedList<Server> *old_arr = main_servers;
         main_servers = new_arr;
         for (int i = 0; i < old_size; i++) {

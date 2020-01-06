@@ -1,14 +1,14 @@
 #ifndef WET2_DATACENTERMANAGER_H
 #define WET2_DATACENTERMANAGER_H
 
-#define INCREASE 1
-#define DECREASE -1
-
 #include "DataCenter.h"
 #include "AVLTree.h"
 #include "library2.h"
 #include "UF.h"
 #include "DynamicHashTable.h"
+
+#define INCREASE 1
+#define DECREASE -1
 
 class DataCenterManager {
     UF DataCentersUF;
@@ -48,8 +48,6 @@ public:
     class ALLOCATION_ERROR : public ErrorCodes {
     };
 
-
-    void SumHighK(int k, AVLTree<Server> tree);
 };
 
 
