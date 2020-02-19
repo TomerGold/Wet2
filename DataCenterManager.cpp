@@ -18,7 +18,7 @@ StatusType DataCenterManager::MergeDataCenters(int dataCenter1, int dataCenter2)
         num_of_servers2 = DataCentersUF.GetDataCenters()[index2].GetServersTree().GetRoot()->GetNumOfServers() + 1;
     }
     sum_of_servers = num_of_servers1 + num_of_servers2;
-    if (num_of_servers1 == 0 || num_of_servers2 == 0) { //one of the DataCenters doesnt have servers no need to merge trees
+    if (sum_of_servers == 0 || (index1 == index2)) { //both DataCenters dont have servers no need to merge trees
         DataCentersUF.Union(dataCenter1, dataCenter2);
         return SUCCESS;
     }
@@ -163,19 +163,31 @@ StatusType DataCenterManager::SumHighestTrafficServers(int dataCenterID, int k, 
     if (k < 0 || dataCenterID > num_of_data_centers || dataCenterID < 0 || traffic == nullptr) {
         return INVALID_INPUT;
     }
+    if (k == 0) {
+        *traffic = 0;
+        return SUCCESS;
+    }
     if (dataCenterID == 0) {
-        if (k >= ServersTree.GetRoot()->GetNumOfServers() + 1) {
-            *traffic = ServersTree.GetRoot()->GetSumOfTraffic() + ServersTree.GetRoot()->GetData().GetTraffic();
+        if (ServersTree.GetRoot() != nullptr) {
+            if (k >= ServersTree.GetRoot()->GetNumOfServers() + 1) {
+                *traffic = ServersTree.GetRoot()->GetSumOfTraffic() + ServersTree.GetRoot()->GetData().GetTraffic();
+            } else {
+                *traffic = ServersTree.GetRoot()->SumHighK(k);
+            }
         } else {
-            *traffic = ServersTree.GetRoot()->SumHighK(k);
+            *traffic = 0;
         }
     } else {
         int index = DataCentersUF.Find(dataCenterID);
-        if (k >= DataCentersUF.GetDataCenters()[index].GetServersTree().GetRoot()->GetNumOfServers() + 1) {
-            *traffic = DataCentersUF.GetDataCenters()[index].GetServersTree().GetRoot()->GetSumOfTraffic() +
-                       DataCentersUF.GetDataCenters()[index].GetServersTree().GetRoot()->GetData().GetTraffic();
+        if (DataCentersUF.GetDataCenters()[index].GetServersTree().GetRoot() != nullptr) {
+            if (k >= DataCentersUF.GetDataCenters()[index].GetServersTree().GetRoot()->GetNumOfServers() + 1) {
+                *traffic = DataCentersUF.GetDataCenters()[index].GetServersTree().GetRoot()->GetSumOfTraffic() +
+                           DataCentersUF.GetDataCenters()[index].GetServersTree().GetRoot()->GetData().GetTraffic();
+            } else {
+                *traffic = DataCentersUF.GetDataCenters()[index].GetServersTree().GetRoot()->SumHighK(k);
+            }
         } else {
-            *traffic = DataCentersUF.GetDataCenters()[index].GetServersTree().GetRoot()->SumHighK(k);
+            *traffic = 0;
         }
     }
     return SUCCESS;
